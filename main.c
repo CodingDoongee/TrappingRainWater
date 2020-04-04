@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#define MAPFIELD_X 1000
-#define MAPFIELD_Y 100
+typedef unsigned char uint8_t;
+
 int FindMax(int* height, int heightSize)
 {
 	int MaxVal = 0;
@@ -15,38 +15,48 @@ int FindMax(int* height, int heightSize)
 	return MaxVal;
 }
 
+
 int trap(int* height, int heightSize)
 {
-	//int* ars32_WaterHeight = (int*)malloc(sizeof(int) * heightSize);
-	int ars32_WaterMap[MAPFIELD_X][MAPFIELD_Y] = { 0 };
+	uint8_t** aru8_WaterMap = NULL;
 	int s32_MaxHeight = 0, s32_WaterVolume = 0;
+
 	// find max height
 	s32_MaxHeight = FindMax(height, heightSize);
-	for (int i = 0; i < heightSize; i++)
+	aru8_WaterMap = (uint8_t**)malloc(sizeof(uint8_t*) * s32_MaxHeight);
+	for (int i = 0; i < s32_MaxHeight; i++)
 	{
-		for (int j = 0; j < s32_MaxHeight; j++)
+		aru8_WaterMap[i] = malloc(sizeof(uint8_t) * heightSize);
+		memset(aru8_WaterMap[i], 0, sizeof(uint8_t) * heightSize);
+	}
+
+
+	for (int j = 0; j < heightSize; j++)
+	{
+		for (int i = 0; i < s32_MaxHeight; i++)
 		{
-			if (j < height[i])
+			if (i < height[j])
 			{
-				ars32_WaterMap[i][j] = 2;
+				aru8_WaterMap[i][j] = 2;
 			}
 			else
 			{
-				ars32_WaterMap[i][j] = 1;
+				aru8_WaterMap[i][j] = 1;
 			}
 		}
 	}
 
 	// max height left search
-	for (int j = 0; j < MAPFIELD_Y; j++)
+	for (int i = 0; i < s32_MaxHeight; i++)
 	{
-		for (int i = 0; i < MAPFIELD_X; i++)
+		for (int j = 0; j < heightSize; j++)
 		{
-			if (ars32_WaterMap[i][j] == 1)
+
+			if (aru8_WaterMap[i][j] == 1)
 			{
-				ars32_WaterMap[i][j] = 0;
+				aru8_WaterMap[i][j] = 0;
 			}
-			else if (ars32_WaterMap[i][j] == 2)
+			else if (aru8_WaterMap[i][j] == 2)
 			{
 				break;
 			}
@@ -55,39 +65,48 @@ int trap(int* height, int heightSize)
 
 
 	// max height right search
-	for (int j = 0; j < MAPFIELD_Y; j++)
+	for (int i = 0; i < s32_MaxHeight; i++)
 	{
-		for (int i = MAPFIELD_X - 1; i >= 0; i--)
+		for (int j = heightSize-1; j >= 0 ; j--)
 		{
-			if (ars32_WaterMap[i][j] == 1)
+
+			if (aru8_WaterMap[i][j] == 1)
 			{
-				ars32_WaterMap[i][j] = 0;
+				aru8_WaterMap[i][j] = 0;
 			}
-			else if (ars32_WaterMap[i][j] == 2)
+			else if (aru8_WaterMap[i][j] == 2)
 			{
 				break;
 			}
 		}
 	}
-	for (int j = s32_MaxHeight-1; j >= 0; j--)
+
+
+	for (int j = s32_MaxHeight - 1; j >= 0; j--)
 	{
 		for (int i = 0; i < heightSize; i++)
 		{
-			printf("%d ", ars32_WaterMap[i][j]);
-			if (ars32_WaterMap[i][j] == 1)
+			//printf("%d ", aru8_WaterMap[j][i]);
+			if (aru8_WaterMap[j][i] == 1)
 			{
 				s32_WaterVolume++;
 			}
 		}
-		printf("\n");
+		//printf("\n");
 	}
+
+	for (int i = 0; i < s32_MaxHeight; i++)
+	{
+		free(aru8_WaterMap[i]);
+	}
+	free(aru8_WaterMap);
 
 	return s32_WaterVolume;
 }
 
 void main()
 {
-	int ars32_height[15] = { 0,1,0,2,1,0,1,3,2,1,2,3,3,3,1 };
+	int ars32_height[15] = { 1,1,1,1,1,0,1,3,2,1,2,3,3,3,1 };
 	for (int kk = 0; kk < 15; kk++)
 	{
 		printf("%d ", ars32_height[kk]);
