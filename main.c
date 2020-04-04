@@ -22,18 +22,18 @@ int trap(int* height, int heightSize)
 	int s32_MaxHeight = 0, s32_WaterVolume = 0;
 	// find max height
 	s32_MaxHeight = FindMax(height, heightSize);
-	for (int i=0; i<heightSize; i++)
+	for (int i = 0; i < heightSize; i++)
 	{
-		for (int j=0; j< s32_MaxHeight; j++)
+		for (int j = 0; j < s32_MaxHeight; j++)
 		{
-			if (j <= height[i])
+			if (j < height[i])
 			{
 				ars32_WaterMap[i][j] = 2;
 			}
 			else
 			{
 				ars32_WaterMap[i][j] = 1;
-			}			
+			}
 		}
 	}
 
@@ -57,7 +57,7 @@ int trap(int* height, int heightSize)
 	// max height right search
 	for (int j = 0; j < MAPFIELD_Y; j++)
 	{
-		for (int i = MAPFIELD_X-1; i >= 0; i--)
+		for (int i = MAPFIELD_X - 1; i >= 0; i--)
 		{
 			if (ars32_WaterMap[i][j] == 1)
 			{
@@ -69,16 +69,17 @@ int trap(int* height, int heightSize)
 			}
 		}
 	}
-
-	for (int i = 0; i < heightSize; i++)
+	for (int j = s32_MaxHeight-1; j >= 0; j--)
 	{
-		for (int j = 0; j < s32_MaxHeight; j++)
+		for (int i = 0; i < heightSize; i++)
 		{
+			printf("%d ", ars32_WaterMap[i][j]);
 			if (ars32_WaterMap[i][j] == 1)
 			{
 				s32_WaterVolume++;
 			}
 		}
+		printf("\n");
 	}
 
 	return s32_WaterVolume;
@@ -86,7 +87,14 @@ int trap(int* height, int heightSize)
 
 void main()
 {
-	int ars32_height[12] = { 0,1,0,2,1,0,1,3,2,1,2,1 };
-	printf("Result: %d\n", trap(ars32_height, 12));
+	int ars32_height[15] = { 0,1,0,2,1,0,1,3,2,1,2,3,3,3,1 };
+	for (int kk = 0; kk < 15; kk++)
+	{
+		printf("%d ", ars32_height[kk]);
+	}
+	printf("\n");
+	printf("\n");
+	printf("\n");
+	printf("Result: %d\n", trap(ars32_height, 15));
 
 }
